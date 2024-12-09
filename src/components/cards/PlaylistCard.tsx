@@ -14,21 +14,23 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({
     const { theme } = useTheme();
     return (
         <div
-            className="flex flex-col items-center h-[250px] 
+            className="
+            flex flex-col items-center h-[350px] sm:h-[200px]
             bg-white border border-gray-200 rounded-lg shadow 
             md:flex-row md:max-w-xl 
             hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
         >
             <img
-                className="object-cover w-[30px] h-full rounded-t-lg  md:w-48 md:rounded-none md:rounded-s-lg"
+                className="object-cover  h-full rounded-t-lg  md:w-48 md:rounded-none md:rounded-s-lg"
                 src={'alice-in-chains.jpg'}
                 alt={title}
             />
             <div className={`
                 ${theme === 'light' ? 'bg-white' : 'bg-black'}
                 flex flex-col justify-between p-4
-                w-[222px] h-full
-                rounded-r-lg leading-normal`}>
+                w-full sm:w-[222px] h-full
+                sm:rounded-r-lg rounded-b-lg sm:rounded-bl-none
+                leading-normal`}>
                 <h5 className={`
                     ${theme === 'light' ? 'text-black' : 'text-lime-400'}
                     mb-2 text-2xl font-bold
