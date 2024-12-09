@@ -3,28 +3,24 @@ import { useTheme } from '@/context/ThemeContext';
 import { ItemCardProps } from '@/model/interfaces';
 import React from 'react';
 
-const ItemCard: React.FC<ItemCardProps> = ({ title, description, link, onClick, onDelete }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ title, description, onClick, onDelete }) => {
     const { theme } = useTheme();
     return (
         <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-xl">
-            <a href={link}>
-                <img
-                    src={'woman-song.jpg'}
-                    alt={'people song'}
-                    className="rounded-t-lg h-[180px] w-full"
-                />
-            </a>
+            <img
+                src={'woman-song.jpg'}
+                alt={'people song'}
+                className="rounded-t-lg h-[180px] w-full"
+            />
             <div className={`
                 ${theme === 'light' ? 'bg-white' : 'bg-black'}
                 p-5 flex flex-col justify-between rounded-b-lg h-[180px]`}
             >
-                <a href={link}>
-                    <h5 className={`
+                <h5 className={`
                         text-${theme === 'light' ? 'black' : 'lime-400'}
                         mb-2 text-2xl font-bold tracking-tight truncate overflow-hidden`}>
-                        {title}
-                    </h5>
-                </a>
+                    {title}
+                </h5>
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
                     {description}
                 </p>
