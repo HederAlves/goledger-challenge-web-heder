@@ -65,7 +65,6 @@ export const createPlaylist = () => async (dispatch: AppDispatch, getState: () =
     }
 };
 
-
 export const updatePlaylist = (playlistKey: string) => async (dispatch: AppDispatch, getState: () => { playlist: PlaylistState }) => {
     const { playlistName, isPrivate, selectedSongs } = getState().playlist;
 
