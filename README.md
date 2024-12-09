@@ -18,10 +18,6 @@
 
 </div>
 
-## About
-
-music steam developed for you to enjoy the best of world music
-
 ## Project setup
 
 <p> To install the necessary packages for the app use </p>
