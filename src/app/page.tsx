@@ -1,101 +1,190 @@
-import Image from "next/image";
+'use client'
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store/store';
+import HomeCard from '@/components/cards/HomeCard';
+import { useTheme } from '@/context/ThemeContext';
+import { Album, Playlist, Song } from '@/model/interfaces';
+import { fetchAlbumsAndArtists } from '@/store/album-reducer/albumActions';
+import { fetchArtists } from '@/store/artist-reducer/artistActions';
+import { fetchAlbumsAndPlaylists } from '@/store/playlist-reducer/playlistActions';
+import { fetchSongsAndAlbums } from '@/store/song-reducer/songActions';
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+const HomePage: React.FC = () => {
+    const { theme } = useTheme();
+    const dispatch = useDispatch<AppDispatch>();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    const cardThemeYellow = {
+        background: 'bg-yellow-100',
+        border: 'border-yellow-400',
+        title: 'text-yellow-700',
+        subtitle: 'text-yellow-600',
+        itemText: 'text-yellow-800',
+        itemSecondaryText: 'text-yellow-600',
+        itemAmount: 'text-yellow-900',
+    };
+
+    const cardThemeLime = {
+        background: 'bg-lime-100',
+        border: 'border-lime-400',
+        title: 'text-lime-700',
+        subtitle: 'text-lime-600',
+        itemText: 'text-lime-800',
+        itemSecondaryText: 'text-lime-600',
+        itemAmount: 'text-lime-900',
+    };
+
+    const cardThemeTeal = {
+        background: 'bg-teal-100',
+        border: 'border-teal-400',
+        title: 'text-teal-700',
+        subtitle: 'text-teal-600',
+        itemText: 'text-teal-800',
+        itemSecondaryText: 'text-teal-600',
+        itemAmount: 'text-teal-900',
+    };
+
+    const cardThemeRed = {
+        background: 'bg-red-100',
+        border: 'border-red-400',
+        title: 'text-red-700',
+        subtitle: 'text-red-600',
+        itemText: 'text-red-800',
+        itemSecondaryText: 'text-red-600',
+        itemAmount: 'text-red-900',
+    };
+
+    // Fetch songs, albums, playlists, and artists when the component mounts
+    useEffect(() => {
+        dispatch(fetchSongsAndAlbums());
+        dispatch(fetchAlbumsAndPlaylists()); // Também busca as playlists
+        dispatch(fetchArtists()); // Buscando os artistas
+        dispatch(fetchAlbumsAndArtists()); // Buscando os álbuns e artistas
+    }, [dispatch]);
+
+    // Select songs, albums, playlists, and artists from Redux store
+    const songs = useSelector((state: RootState) => state.songs.songs);
+    const albums = useSelector((state: RootState) => state.album.albums); // Select albums
+    const playlists = useSelector((state: RootState) => state.playlist.playlists);
+    const artists = useSelector((state: RootState) => state.artist.artists);
+
+    // Get the counts
+    const totalArtists = artists.length;
+    const totalAlbums = albums.length;
+    const totalSongs = songs.length;
+    const totalPlaylists = playlists.length;
+
+    // Transform songs data into a suitable format for HomeCard
+    const songsData = songs.map((song: Song) => {
+        // Encontrar o álbum correspondente à música
+        const album = albums.find((album: Album) => album.id === song.albumId); // Ajuste para a sua estrutura
+
+        return {
+            name: song.name,
+            albumName: album ? album.name : 'Unknown Album', // Retorna o nome do álbum ou "Unknown Album"
+        };
+    });
+
+    // Prepare playlists data with song names
+    const playlistsData = playlists.map((playlist: Playlist) => {
+        const playlistSongs = playlist.songs.map(() => {
+
+            const song = songs.find((song: Song) => song.id === song.songId);
+            return song ? song.name : 'Unknown Song'; // Retorna o nome da música ou 'Unknown Song'
+        });
+
+        return {
+            name: playlist.name,
+            details: playlistSongs.join(', '), // Exibe os nomes das músicas separados por vírgula
+            amount: `${playlistSongs.length} songs`, // Exibe a quantidade de músicas
+        };
+    });
+
+    // Prepare artists data with country
+    const artistsData = artists.map((artist) => {
+        // Filtra os álbuns que pertencem ao artista, comparando o campo "@key"
+        const artistAlbums = albums.filter((album: Album) => album.artist["@key"] === `artist:${artist.id}`);
+
+        return {
+            name: artist.name,
+            country: artist.country, // Incluindo o país
+            amount: `${artistAlbums.length} albums`, // Conta a quantidade de álbuns
+        };
+    });
+
+    // Prepare albums data with year
+    const albumsData = albums.map((album: Album) => ({
+        name: album.name,
+        year: album.year.toString(), // Adicionando o ano do álbum
+    }));
+
+    return (
+        <div className={`text-${theme === 'light' ? 'black' : 'white'} min-h-screen`}>
+            <main>
+                {/* Parallax Section */}
+                <div
+                    className="relative w-full h-[40vh] lg:h-[70vh] bg-cover bg-center bg-fixed"
+                    style={{ backgroundImage: "url('/banner.jpg')" }}
+                >
+                    <div className="sm:absolute sm:top-0 sm:right-0 p-8 bg-black bg-opacity-30 backdrop-blur-md rounded-xl sm:w-[350px] m-2 items-end">
+                        <div className="space-y-2">
+                            <p className="text-2xl font-semibold text-yellow-600">
+                                <span className="font-extrabold text-2xl text-yellow-300">{totalArtists}</span> Artists castratos
+                            </p>
+                            <p className="text-2xl font-semibold text-lime-600">
+                                Chegamos a <span className="font-extrabold text-2xl text-lime-300">{totalAlbums}</span> Albums
+                            </p>
+                            <p className="text-2xl font-semibold text-teal-600">
+                                Em um Total de <span className="font-extrabold text-2xl text-teal-300">{totalSongs}</span> musics
+                            </p>
+                            <p className="text-2xl font-semibold text-red-600">
+                                Playlists Ativas Agora <span className="font-extrabold text-2xl text-red-300">{totalPlaylists}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Cards Section */}
+                <div className={`${theme === 'light' ? 'bg-[#ffffff]' : 'bg-black'} flex gap-5 p-5 flex-wrap  lg:flex-nowrap justify-center`}>
+                    {/* Artists HomeCard */}
+                    <HomeCard
+                        title="Artists"
+                        subtitle="View all"
+                        link="/artist"
+                        items={artistsData.slice(0, 4)} // Exibindo os primeiros 4 artistas
+                        theme={cardThemeYellow} // Passando o tema customizado
+                    />
+
+                    {/* Albums HomeCard */}
+                    <HomeCard
+                        title="Albums"
+                        subtitle="View all"
+                        link="/album"
+                        items={albumsData.slice(0, 4)} // Exibindo os primeiros 4 álbuns
+                        theme={cardThemeLime} // Passando o tema customizado
+                    />
+
+                    {/* Songs HomeCard */}
+                    <HomeCard
+                        title="Songs"
+                        subtitle="View all"
+                        link="/song"
+                        items={songsData.slice(0, 4)} // Exibindo as primeiras 4 músicas
+                        theme={cardThemeTeal} // Passando o tema customizado
+                    />
+
+                    {/* Playlists HomeCard */}
+                    <HomeCard
+                        title="Playlists"
+                        subtitle="View all"
+                        link="/playlist"
+                        items={playlistsData.slice(0, 4)} // Exibindo as primeiras 4 playlists
+                        theme={cardThemeRed} // Passando o tema customizado
+                    />
+                </div>
+            </main>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
-}
+    );
+};
+
+export default HomePage;

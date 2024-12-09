@@ -91,7 +91,6 @@ export interface ButtonAdd {
 export interface ArtistCardProps {
     name: string;
     country: string;
-    imageUrl: string;
     onEdit: () => void;
     onDelete: () => void;
 }
@@ -120,7 +119,6 @@ export interface HomeCardProps {
 export interface ItemCardProps {
     title: string;
     description: string;
-    link: string;
     onClick: () => void;
     onDelete: () => void;
 }
