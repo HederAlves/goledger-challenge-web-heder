@@ -17,7 +17,7 @@ const AddButton: React.FC<ButtonAdd> = ({ href }) => {
                 top-[60px] sm:top-5 left-[10px] sm:left-[50px] lg:left-[162px] fixed z-50
             "
         >
-            <span className=" text-4xl sm:text-6xl mb-[10] sm:mb-[15px] font-extrabold">+</span>
+            <span className=" text-4xl sm:text-6xl mb-[7] sm:mb-[6px] font-extrabold">+</span>
         </Link>
     );
 };
